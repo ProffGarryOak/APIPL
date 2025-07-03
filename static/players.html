@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IPL 2025 Players</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; color: #333; margin-top: 15px;">
+
+  <h2 style="text-align: center; color: #0d47a1; margin-bottom: 30px;">IPL 2025 Player Directory</h2>
+  <h4 style="text-align: center; color: #d44747; margin-bottom: 30px;">Use names in this format only in parameters</h4>
+  <div id="player-list" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+    <!-- JavaScript will inject players here -->
+  </div>
+
+  <script>
+    const players = [
+      'Abdul Samad', 'Abhinav Manohar', 'Abhishek Sharma', 'Abishek Porel', 'Akash Deep', 'Akash Madhwal',
+      'Akash Maharaj Singh', 'Angkrish Raghuvanshi', 'Aniket Verma', 'Anshul Kamboj', 'Anukul Roy', 'Arshad Khan',
+      'Arshdeep Singh', 'Ashutosh Sharma', 'Ashwani Kumar', 'Ashwin', 'Atharva Taide', 'Avesh Khan', 'Axar',
+      'Ayush Badoni', 'Ayush Mhatre', 'Azmatullah', 'Bairstow', 'Bartlett', 'Bhandage', 'Bhuvneshwar', 'Boult',
+      'Breetzke', 'Brevis', 'Bumrah', 'Buttler', 'Chahal', 'Chahar', 'Chameera', 'Conway', 'Corbin Bosch', 'Cummins',
+      'Dhoni', 'Dhruv Jurel', 'Digvesh Rathi', 'Eshan Malinga', 'Fazalhaq Farooqi', 'Ferguson', 'Ferreira',
+      'Fraser-McGurk', 'Gaikwad', 'Gerald Coetzee', 'Gurbaz', 'Hardik Pandya', 'Harpreet Brar', 'Harsh Dubey',
+      'Harshal Patel', 'Harshit Rana', 'Hasaranga', 'Hazlewood', 'Head', 'Hetmyer', 'Hooda', 'Ishan Kishan', 'Ishant',
+      'Jacob Bethell', 'Jadeja', 'Jaiswal', 'Jamie Overton', 'Jamieson', 'Jitesh Sharma', 'Jofra Archer', 'Josh Inglis',
+      'KS Rathore', 'Kamindu Mendis', 'Karim Janat', 'Karn Sharma', 'Kartikeya', 'Karun Nair', 'Khaleel Ahmed',
+      'Khejroliya', 'Klaasen', 'Kohli', 'Krunal Pandya', 'Kuldeep Yadav', 'Kusal Mendis', 'Kwena Maphaka',
+      'Livingstone', 'Livingstone 1 run', 'M Siddharth', 'Madhav Tiwari', 'Manish Pandey', 'Marco Jansen', 'Markram',
+      'Maxwell', 'Mayank Agarawal', 'Mayank Yadav', 'Miller', 'Mitchell Marsh', 'Mitchell Owen', 'Mitchell Starc',
+      'Moeen Ali', 'Mohit Sharma', 'Mujeeb', 'Mukesh Choudhary', 'Mukesh Kumar', 'Mulder', 'Musheer Khan',
+      'Mustafizur', 'N Thushara', 'Naman Dhir', 'Narine', 'Nathan Ellis', 'Nehal Wadhera', 'Ngidi', 'Nitish Rana',
+      'Nitish Reddy', 'Noor Ahmad', 'Nortje', 'Padikkal', 'Pant', 'Parag', 'Pathirana', 'Phil Salt', 'Pooran',
+      'Powell', 'Prabhsimran', 'Prasidh', 'Praveen Dubey', 'Prince Yadav', 'Priyansh Arya', 'Rabada', 'Rahane', 'Rahul',
+      'Rahul Chahar', 'Rahul Tewatia', 'Raj Bawa', 'Rajat Patidar', 'Ramandeep Singh', 'Rashid Khan', 'Rasikh Salam',
+      'Ravi Bishnoi', 'Ravindra', 'Richard Gleeson', 'Rickelton', 'Rinku Singh', 'Riyan Parag', 'Robin Minz', 'Rohit',
+      'Russell', 'Rutherford', 'Sai Kishore', 'Sai Sudharsan', 'Sakariya', 'Sam Curran', 'Sameer Rizvi', 'Samson',
+      'Sandeep', 'Sandeep Sharma', 'Santner', 'Satyanarayana Raju', 'Sediqullah Atal', 'Shahbaz Ahmed', 'Shahrukh Khan',
+      'Shaik Rasheed', 'Shami', 'Shankar', 'Shashank Singh', 'Shepherd', 'Shivam Dube', 'Shreyas Iyer',
+      'Shubham Dubey', 'Shubman Gill', 'Simarjeet Singh', 'Siraj', 'Spencer Johnson', 'Stoinis', 'Stubbs',
+      'Suryakumar Yadav', 'Suryansh Shedge', 'Suyash Sharma', 'T Natarajan', 'Thakur', 'Theekshana', 'Tilak Varma',
+      'Tim David', 'Topley', 'Tripathi', 'Tushar Deshpande', 'Unadkat', 'Urvil Patel', 'Vaibhav Arora',
+      'Vaibhav Suryavanshi', 'Varun Chakaravarthy', 'Venkatesh Iyer', 'Vignesh Puthur', 'Vijaykumar Vyshak',
+      'Vipraj Nigam', 'Washington Sundar', 'Will Jacks', 'William ORourke', 'Yash Dayal', 'Yash Thakur',
+      'Yudhvir Singh', 'Zampa', 'Zeeshan Ansari', 'de Kock', 'du Plessis'
+    ];
+
+    const container = document.getElementById('player-list');
+    players.sort().forEach(player => {
+      const div = document.createElement('div');
+      div.innerText = player;
+      div.style.background = 'white';
+      div.style.padding = '10px 15px';
+      div.style.borderRadius = '6px';
+      div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+      container.appendChild(div);
+    });
+  </script>
+
+</body>
+</html>

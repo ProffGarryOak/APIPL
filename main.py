@@ -11,7 +11,9 @@ import math
 import numpy as np
 import pandas as pd
 from datetime import datetime
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from pathlib import Path
 def deep_clean(data):
     if isinstance(data, dict):
         return {k: deep_clean(v) for k, v in data.items()}
@@ -28,6 +30,15 @@ def deep_clean(data):
 
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def root():
+    html_path = Path("static/index.html")
+    if html_path.exists():
+        return html_path.read_text()
+    return "<h1>Oops! index.html not found 😵‍💫</h1>"
 
 # CORS setup for frontend
 app.add_middleware(

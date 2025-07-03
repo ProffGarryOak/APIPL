@@ -1,25 +1,20 @@
-# train_model.py
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-import pickle
 
-df = pd.read_csv("matches.csv")
+def get_unique_players(csv_path: str) -> list:
+    df = pd.read_csv(csv_path)
 
-# Filter valid matches
-df = df[df['match_winner'].notna() & (df['team1'] != df['team2'])]
+    # Collect all player names from relevant columns
+    players = set()
 
-# One-hot encode team names
-teams = list(set(df['team1']).union(set(df['team2'])))
-for team in teams:
-    df[f'team1_{team}'] = (df['team1'] == team).astype(int)
-    df[f'team2_{team}'] = (df['team2'] == team).astype(int)
+    for col in ['striker', 'bowler', 'player_dismissed']:
+        if col in df.columns:
+            players.update(df[col].dropna().unique())
 
-X = df[[col for col in df.columns if col.startswith('team1_') or col.startswith('team2_')]]
-y = df['match_winner']
+    # Return sorted list
+    return sorted(players)
 
-model = LogisticRegression(max_iter=1000)
-model.fit(X, y)
-
-# Save model
-with open("winner_model.pkl", "wb") as f:
-    pickle.dump((model, teams), f)
+# Example usage:
+if __name__ == "__main__":
+    path = "deliveries.csv"  # replace with your actual file
+    players = get_unique_players(path)
+    print(players)

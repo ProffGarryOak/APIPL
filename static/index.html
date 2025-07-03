@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Data API Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+    <style>
+        .endpoint-card {
+            transition: all 0.3s ease;
+        }
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #3b82f6;
+            transition: width 0.3s;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        .nav-link.active:after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold">IPL Data API</h1>
+                <div class="text-sm bg-blue-700 px-3 py-1 rounded-full">
+                    Base URL: <span class="font-mono">https://apipl.onrender.com/api</span>
+                </div>
+            </div>
+            <p class="mt-2 opacity-90">Comprehensive cricket statistics from the Indian Premier League</p>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="md:w-1/4">
+                <div class="bg-white rounded-lg shadow-md p-4 sticky top-4">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">Navigation</h2>
+                    <ul class="space-y-2">
+                        <li><a href="#overview" class="nav-link active block py-2 px-3 rounded hover:bg-blue-50 text-blue-600">Overview</a></li>
+                        <li><a href="#endpoints" class="nav-link block py-2 px-3 rounded hover:bg-blue-50">All Endpoints</a></li>
+                        <li><a href="#teams" class="nav-link block py-2 px-3 rounded hover:bg-blue-50">Teams</a></li>
+                        <li><a href="#players" class="nav-link block py-2 px-3 rounded hover:bg-blue-50">Players</a></li>
+                        <li><a href="#examples" class="nav-link block py-2 px-3 rounded hover:bg-blue-50">Examples</a></li>
+                        <li><a href="#downloads" class="nav-link block py-2 px-3 rounded hover:bg-blue-50">Download Data</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="md:w-3/4">
+                <!-- Overview Section -->
+                <section id="overview" class="mb-12 tab-content active">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">API Overview</h2>
+                        <p class="mb-4 text-gray-700">This API provides comprehensive statistics and data from the Indian Premier League (IPL) cricket tournament.</p>
+                        <h4 style="color: #a10d0d; margin-bottom: 25px; background: #ffe5e5; padding: 15px; border-radius: 8px; border-left: 5px solid #a10d0d;">
+                             <strong>Note:</strong> When using query parameters, enter team names in <strong>UPPERCASE short forms</strong> (e.g., <code>CSK</code>, <code>RCB</code>) and ensure player names exactly match those listed in the <strong>Players</strong> section.
+                          </h4>
+                          
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h3 class="font-bold text-blue-700 mb-2">Features</h3>
+                                <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                                    <li>Match statistics and details</li>
+                                    <li>Team performance metrics</li>
+                                    <li>Player comparisons and form</li>
+                                    <li>Fantasy points calculations</li>
+                                    <li>Live match simulations</li>
+                                    <li>AI-generated match summaries</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h3 class="font-bold text-green-700 mb-2">Quick Start</h3>
+                                <ol class="list-decimal pl-5 space-y-1 text-gray-700">
+                                    <li>Explore endpoints below</li>
+                                    <li>Copy the sample requests</li>
+                                    <li>Modify parameters as needed</li>
+                                    <li>Use in your applications</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3 text-gray-800">Sample Request</h3>
+                        <div class="bg-gray-800 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-400">GET /api/teams</span>
+                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/teams">
+                                    Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/teams')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3 text-gray-800">Sample Response</h3>
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <pre><code class="language-json">{
+  "teams": [
+    "Chennai Super Kings",
+    "Delhi Capitals",
+    "Gujarat Titans",
+    "Kolkata Knight Riders",
+    "Lucknow Super Giants",
+    "Mumbai Indians",
+    "Punjab Kings",
+    "Rajasthan Royals",
+    "Royal Challengers Bangalore",
+    "Sunrisers Hyderabad"
+  ]
+}</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Endpoints Section -->
+                <section id="endpoints" class="mb-12 tab-content">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">All API Endpoints</h2>
+                        
+                        <!-- Match Endpoints -->
+                        <h3 id="match-endpoints" class="text-xl font-bold mb-4 text-gray-700 border-b pb-2">Match Data Endpoints</h3>
+                        <div class="space-y-6">
+                            <!-- Match Details -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/match_details</h4>
+                                        <p class="text-gray-600 mt-1">Get comprehensive details about a specific IPL match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/match_details?match_id=12</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/match_details?match_id=12">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/match_details?match_id=12')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "match_id": "12",
+  "team1": "Mumbai Indians",
+  "team2": "Chennai Super Kings",
+  "date": "2025-05-01",
+  "venue": "Wankhede Stadium",
+  "stage": "Group Stage",
+  "match_winner": "Mumbai Indians",
+  "margin": "5 wickets",
+  "first_ings_score": 185,
+  "first_ings_wkts": 6,
+  "second_ings_score": 189,
+  "second_ings_wkts": 5,
+  "player_of_the_match": "Rohit",
+  "performance": [
+    {
+      "team": "Mumbai Indians",
+      "runs": 189,
+      "wickets": 5,
+      "overs": 19.3,
+      "batsmen": [
+        {
+          "striker": "Rohit",
+          "runs": 78,
+          "balls": 45,
+          "fours": 8,
+          "sixes": 3,
+          "strike_rate": 173.33
+        }
+      ],
+      "bowlers": [
+        {
+          "bowler": "Bumrah",
+          "wickets": 2,
+          "runs": 28,
+          "extras": 3,
+          "total_runs": 31
+        }
+      ]
+    }
+  ]
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fantasy Points -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/fantasy_points</h4>
+                                        <p class="text-gray-600 mt-1">Calculate fantasy points for players in a specific match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/fantasy_points?match_id=12</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/fantasy_points?match_id=12">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/fantasy_points?match_id=12')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "player": "Rohit",
+    "points": 112
+  },
+  {
+    "player": "Bumrah",
+    "points": 78
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live Simulation -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/live_simulation</h4>
+                                        <p class="text-gray-600 mt-1">Get simulated live match data up to a specific ball</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                        <li><span class="parameter">upto_ball</span> (optional) - The ball number to simulate up to (e.g., 12.3)</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/live_simulation?match_id=12&upto_ball=12.3</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/live_simulation?match_id=12&upto_ball=12.3">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/live_simulation?match_id=12&upto_ball=12.3')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "match_id": "12",
+  "balls": 75,
+  "runs": 98,
+  "wickets": 3
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Match Progress -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/match_progress</h4>
+                                        <p class="text-gray-600 mt-1">Get match progress up to a specific over</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                        <li><span class="parameter">upto_over</span> <span class="required">(required)</span> - The over number to get progress up to</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/match_progress?match_id=12&upto_over=15</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/match_progress?match_id=12&upto_over=15">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/match_progress?match_id=12&upto_over=15')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "runs": 125,
+  "wickets": 4,
+  "overs": 15
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notifications -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/notifications</h4>
+                                        <p class="text-gray-600 mt-1">Get milestone notifications for a match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/notifications?match_id=12</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/notifications?match_id=12">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/notifications?match_id=12')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "events": [
+    "Milestone: Rohit scored 50 runs!",
+    "Milestone: Bumrah took 3 wickets!"
+  ]
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Summary -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/ai_summary</h4>
+                                        <p class="text-gray-600 mt-1">Get an AI-generated summary of a match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">match_id</span> <span class="required">(required)</span> - The ID of the match</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/ai_summary?match_id=12</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/ai_summary?match_id=12">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/ai_summary?match_id=12')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "summary": "In the Group Stage match at Wankhede Stadium, Mumbai Indians faced off against Chennai Super Kings on 2025-05-01. Mumbai Indians scored 185/6 in the first innings, while Chennai Super Kings chased with 189/5. The match was completed and Mumbai Indians emerged victorious. Top performer: Rohit - Rohit scored 78, Bumrah returned with 2/28."
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Runs by Season -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/runs_by_season</h4>
+                                        <p class="text-gray-600 mt-1">Get runs scored by season (optionally filtered by team)</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">season</span> (optional) - Filter by specific season year</li>
+                                        <li><span class="parameter">team</span> (optional) - Filter by team name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/runs_by_season?team=Mumbai%20Indians</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/runs_by_season?team=MI">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/runs_by_season?team=MI')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "season": 2025,
+    "runs": 2456
+  },
+  {
+    "season": 2022,
+    "runs": 2312
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Endpoints -->
+                        <h3 id="team-endpoints" class="text-xl font-bold mt-12 mb-4 text-gray-700 border-b pb-2">Team Data Endpoints</h3>
+                        <div class="space-y-6">
+                            <!-- Get Teams -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/teams</h4>
+                                        <p class="text-gray-600 mt-1">Get list of all IPL teams</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <p class="text-sm text-gray-600">No parameters required</p>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/teams</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/teams">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/teams')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "teams": [
+    "Chennai Super Kings",
+    "Delhi Capitals",
+    "Gujarat Titans",
+    "Kolkata Knight Riders",
+    "Lucknow Super Giants",
+    "Mumbai Indians",
+    "Punjab Kings",
+    "Rajasthan Royals",
+    "Royal Challengers Bangalore",
+    "Sunrisers Hyderabad"
+  ]
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Runs by Match -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/team_runs_by_match</h4>
+                                        <p class="text-gray-600 mt-1">Get runs scored by a team in each match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">team</span> <span class="required">(required)</span> - Team name</li>
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/team_runs_by_match?team=Mumbai%20Indians&season=2025</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/team_runs_by_match?team=MI&season=2025">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/team_runs_by_match?team=MI&season=2025')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "match_no": "1",
+    "runs": 185
+  },
+  {
+    "match_no": "2",
+    "runs": 172
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Runrate by Match -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/team_runrate_by_match</h4>
+                                        <p class="text-gray-600 mt-1">Get run rate by a team in each match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">team</span> <span class="required">(required)</span> - Team name</li>
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/team_runrate_by_match?team=Mumbai%20Indians</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/team_runrate_by_match?team=MI">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/team_runrate_by_match?team=MI')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "match_no": "1",
+    "runs": 185,
+    "balls": 120,
+    "run_rate": 9.25
+  },
+  {
+    "match_no": "2",
+    "runs": 172,
+    "balls": 114,
+    "run_rate": 9.05
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Wickets by Match -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/team_wickets_by_match</h4>
+                                        <p class="text-gray-600 mt-1">Get wickets lost by a team in each match</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">team</span> <span class="required">(required)</span> - Team name</li>
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/team_wickets_by_match?team=Mumbai%20Indians</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/team_wickets_by_match?team=MI">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/team_wickets_by_match?team=MI')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "match_no": "1",
+    "wickets": 6
+  },
+  {
+    "match_no": "2",
+    "wickets": 4
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Run Rate Trend -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/team_run_rate_trend</h4>
+                                        <p class="text-gray-600 mt-1">Get run rate trends by match phase (powerplay, middle, death)</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">team</span> <span class="required">(required)</span> - Team name</li>
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/team_run_rate_trend?team=Mumbai%20Indians</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/team_run_rate_trend?team=MI">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/team_run_rate_trend?team=MI')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "match_no": "1",
+    "phase": "Powerplay",
+    "runs": 45,
+    "balls": 36,
+    "run_rate": 7.5
+  },
+  {
+    "match_no": "1",
+    "phase": "Middle",
+    "runs": 78,
+    "balls": 54,
+    "run_rate": 8.67
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Team Insights -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/team_insights</h4>
+                                        <p class="text-gray-600 mt-1">Get performance insights for a specific team</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">team</span> <span class="required">(required)</span> - Team name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/team_insights?team=Mumbai%20Indians</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/team_insights?team=MI">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/team_insights?team=MI')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "phase": "Powerplay",
+    "runs": 1200,
+    "balls": 900,
+    "wickets": 45,
+    "run_rate": 8.0
+  },
+  {
+    "phase": "Middle",
+    "runs": 1800,
+    "balls": 1350,
+    "wickets": 60,
+    "run_rate": 8.5
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Player Endpoints -->
+                        <h3 id="player-endpoints" class="text-xl font-bold mt-12 mb-4 text-gray-700 border-b pb-2">Player Data Endpoints</h3>
+                        <div class="space-y-6">
+                            <!-- Player Form -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/player_form</h4>
+                                        <p class="text-gray-600 mt-1">Get recent form for a specific player</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">player</span> <span class="required">(required)</span> - Player name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/player_form?player=Virat%20Kohli</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/player_form?player=Kohli">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/player_form?player=Kohli')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "batting": {
+    "runs": 156,
+    "balls": 120,
+    "strike_rate": 130.0,
+    "fours": 12,
+    "sixes": 5
+  },
+  "bowling": {
+    "wickets": 2,
+    "runs_conceded": 45,
+    "economy": 7.5
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Compare Players -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/compare_players</h4>
+                                        <p class="text-gray-600 mt-1">Compare statistics between two players</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">player1</span> <span class="required">(required)</span> - First player name</li>
+                                        <li><span class="parameter">player2</span> <span class="required">(required)</span> - Second player name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/compare_players?player1=Virat%20Kohli&player2=Rohit%20Sharma</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/compare_players?player1=Kohli&player2=Rohit">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/compare_players?player1=Kohli&player2=Rohit')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "Kohli": {
+    "batting": {
+      "runs": 1256,
+      "balls": 980,
+      "strike_rate": 128.16
+    },
+    "bowling": {
+      "wickets": 12,
+      "balls": 240,
+      "economy": 7.8
+    }
+  },
+  "Rohit": {
+    "batting": {
+      "runs": 1180,
+      "balls": 850,
+      "strike_rate": 138.82
+    },
+    "bowling": {
+      "wickets": 8,
+      "balls": 180,
+      "economy": 8.2
+    }
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Head to Head Player -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/head_to_head_player</h4>
+                                        <p class="text-gray-600 mt-1">Get head-to-head stats between a batter and bowler</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">batter</span> <span class="required">(required)</span> - Batsman name</li>
+                                        <li><span class="parameter">bowler</span> <span class="required">(required)</span> - Bowler name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/head_to_head_player?batter=Virat%20Kohli&bowler=Jasprit%20Bumrah</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/head_to_head_player?batter=Kohli&bowler=Bumrah">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/head_to_head_player?batter=Kohli&bowler=Bumrah')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "runs": 48,
+  "balls": 42,
+  "fours": 5,
+  "sixes": 1,
+  "dismissals": 2,
+  "strike_rate": 114.29
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistical Endpoints -->
+                        <h3 id="statistical-endpoints" class="text-xl font-bold mt-12 mb-4 text-gray-700 border-b pb-2">Statistical Endpoints</h3>
+                        <div class="space-y-6">
+                            <!-- Hard Hitters -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/hard_hitters</h4>
+                                        <p class="text-gray-600 mt-1">Get players with high strike rates and sixes</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">min_strike_rate</span> (optional, default: 140) - Minimum strike rate</li>
+                                        <li><span class="parameter">min_sixes</span> (optional, default: 10) - Minimum number of sixes</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/hard_hitters?min_strike_rate=150&min_sixes=15</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/hard_hitters?min_strike_rate=150&min_sixes=15">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/hard_hitters?min_strike_rate=150&min_sixes=15')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">[
+  {
+    "striker": "Andre Russell",
+    "runs": 480,
+    "balls": 280,
+    "sixes": 32,
+    "strike_rate": 171.43
+  },
+  {
+    "striker": "Hardik Pandya",
+    "runs": 420,
+    "balls": 300,
+    "sixes": 28,
+    "strike_rate": 160.0
+  }
+]</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Clutch Performers -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/clutch_performers_teamwise</h4>
+                                        <p class="text-gray-600 mt-1">Get players who perform well in high-pressure situations</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <p class="text-sm text-gray-600">No parameters required</p>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/clutch_performers_teamwise</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/clutch_performers_teamwise">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/clutch_performers_teamwise')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "clutch_performers": {
+    "Mumbai Indians": ["Rohit", "Bumrah"],
+    "Chennai Super Kings": ["MS Dhoni", "Ravindra Jadeja"]
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Consistent Performers -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/consistent_performers_teamwise</h4>
+                                        <p class="text-gray-600 mt-1">Get players with consistent performance across matches</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <p class="text-sm text-gray-600">No parameters required</p>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/consistent_performers_teamwise</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/consistent_performers_teamwise">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/consistent_performers_teamwise')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "consistent_performers": {
+    "Mumbai Indians": [
+      {
+        "player": "Rohit",
+        "avg_runs": 42.5,
+        "std_dev": 12.3,
+        "matches": 14
+      }
+    ]
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Leaderboards -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/leaderboards</h4>
+                                        <p class="text-gray-600 mt-1">Get various leaderboards (most sixes, best economy, etc.)</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <p class="text-sm text-gray-600">No parameters required</p>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/leaderboards</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/leaderboards">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/leaderboards')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "most_sixes": {
+    "Andre Russell": 32,
+    "Hardik Pandya": 28,
+    "Rohit": 25
+  },
+  "best_economy": {
+    "Bumrah": {
+      "economy": 6.8
+    },
+    "Rashid Khan": {
+      "economy": 7.2
+    }
+  },
+  "best_finishers": {
+    "MS Dhoni": {
+      "total": 420
+    }
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Top Players -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/top_players</h4>
+                                        <p class="text-gray-600 mt-1">Get top batsmen and bowlers</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                        <li><span class="parameter">limit</span> (optional, default: 5) - Number of players to return</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/top_players?season=2025&limit=10</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/top_players?season=2025&limit=10">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/top_players?season=2025&limit=10')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "top_batsmen": [
+    {
+      "striker": "Kohli",
+      "runs": 480,
+      "balls": 360,
+      "fours": 42,
+      "sixes": 18,
+      "strike_rate": 133.33
+    }
+  ],
+  "top_bowlers": [
+    {
+      "bowler": "Bumrah",
+      "wickets": 24,
+      "runs_conceded": 320
+    }
+  ]
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Get Summary -->
+                            <div class="endpoint-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-lg text-blue-600">GET /api/summary</h4>
+                                        <p class="text-gray-600 mt-1">Get summary statistics (matches, runs, wickets)</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Parameters</h5>
+                                    <ul class="text-sm bg-gray-100 p-2 rounded space-y-1">
+                                        <li><span class="parameter">season</span> (optional) - Filter by season year</li>
+                                        <li><span class="parameter">team</span> (optional) - Filter by team name</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="show-example-btn text-blue-600 text-sm">Show Example</button>
+                                    <div class="example-container hidden mt-2">
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-400">GET /api/summary?team=Mumbai%20Indians&season=2025</span>
+                                                <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/summary?team=MI&season=2025">
+                                                    Copy
+                                                </button>
+                                            </div>
+                                            <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/summary?team=MI&season=2025')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                        </div>
+                                        <h5 class="font-medium text-gray-700 mt-4 mb-2">Sample Response</h5>
+                                        <div class="bg-gray-800 rounded-lg p-4">
+                                            <pre><code class="language-json">{
+  "total_matches": 14,
+  "total_runs": 2456,
+  "total_wickets": 120,
+  "team_performance": {
+    "wins": 10,
+    "losses": 4,
+    "draws": 0,
+    "no_results": 0,
+    "win_percentage": 71.43
+  }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Teams Section -->
+                <section id="teams" class="mb-12 tab-content">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">IPL Teams</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <h3 class="font-bold text-blue-700">Chennai Super Kings (CSK)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: MS Dhoni</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                                <h3 class="font-bold text-red-700">Mumbai Indians (MI)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Rohit</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                                <h3 class="font-bold text-green-700">Royal Challengers Bangalore (RCB)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Faf du Plessis</p>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                                <h3 class="font-bold text-purple-700">Kolkata Knight Riders (KKR)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Shreyas Iyer</p>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+                                <h3 class="font-bold text-yellow-700">Rajasthan Royals (RR)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Sanju Samson</p>
+                            </div>
+                            <div class="bg-pink-50 p-4 rounded-lg border border-pink-100">
+                                <h3 class="font-bold text-pink-700">Delhi Capitals (DC)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Rishabh Pant</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                                <h3 class="font-bold text-indigo-700">Punjab Kings (PK)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Shikhar Dhawan</p>
+                            </div>
+                            <div class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                                <h3 class="font-bold text-orange-700">Sunrisers Hyderabad (SRH)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Aiden Markram</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg border border-teal-100">
+                                <h3 class="font-bold text-teal-700">Gujarat Titans (GT)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: Hardik Pandya</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                <h3 class="font-bold text-gray-700">Lucknow Super Giants (LSG)</h3>
+                                <p class="text-sm text-gray-600 mt-1">Captain: KL Rahul</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">Get All Teams via API</h3>
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-400">GET /api/teams</span>
+                                    <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/teams">
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/teams')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Players Section -->
+                <section id="players" class="mb-12 tab-content">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Featured Players</h2>
+                        
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">Top Batsmen</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Kohli</h4>
+                                    <p class="text-sm text-gray-600">RCB | Right-handed batsman</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Rohit</h4>
+                                    <p class="text-sm text-gray-600">MI | Right-handed batsman</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">David Warner</h4>
+                                    <p class="text-sm text-gray-600">DC | Left-handed batsman</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">KL Rahul</h4>
+                                    <p class="text-sm text-gray-600">LSG | Right-handed batsman</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">Top Bowlers</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Bumrah</h4>
+                                    <p class="text-sm text-gray-600">MI | Right-arm fast</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Rashid Khan</h4>
+                                    <p class="text-sm text-gray-600">GT | Right-arm legbreak</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Yuzvendra Chahal</h4>
+                                    <p class="text-sm text-gray-600">RR | Right-arm legbreak</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Mohammed Shami</h4>
+                                    <p class="text-sm text-gray-600">GT | Right-arm fast-medium</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">All-rounders</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Hardik Pandya</h4>
+                                    <p class="text-sm text-gray-600">GT | Right-handed batsman, Right-arm medium-fast</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Ravindra Jadeja</h4>
+                                    <p class="text-sm text-gray-600">CSK | Left-handed batsman, Left-arm orthodox</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Andre Russell</h4>
+                                    <p class="text-sm text-gray-600">KKR | Right-handed batsman, Right-arm fast</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <h4 class="font-bold">Glenn Maxwell</h4>
+                                    <p class="text-sm text-gray-600">RCB | Right-handed batsman, Right-arm offbreak</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold mb-4 text-gray-700">Get Player Data via API</h3>
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-gray-400">GET /api/player_form?player=Kohli</span>
+                                    <button class="copy-btn text-sm text-blue-400 hover:text-blue-300" data-clipboard-text="https://apipl.onrender.com/api/player_form?player=Kohli">
+                                        Copy
+                                    </button>
+                                </div>
+                                <pre><code class="language-javascript">fetch('https://apipl.onrender.com/api/player_form?player=Kohli')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                            </div>
+                            
+    <iframe
+    src="/static/players.html"
+    style="width: 100%; height: 90vh; border: 2px solid #aaa; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin: 100;"
+    title="IPL Player Directory">
+  </iframe>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Examples Section -->
+               <section id="examples" class="mb-20 tab-content">
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-6xl mx-auto">
+    <h2 class="text-4xl font-bold mb-10 text-center text-gray-800"> API Visual Examples</h2>
+
+    <div class="space-y-16">
+      <!-- Example 1: Match Progress -->
+      <div class="w-full">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-700"> Match Progress Overview</h3>
+        <img src="static/images/1.png" alt="Match Progress Screenshot" class="w-full rounded-xl border border-gray-300 shadow-md">
+        <p class="mt-3 text-gray-600 text-sm">
+          This shows how the match unfolded ball by ball, with scoring breakdown, innings flow, and timeline-based visualization.
+        </p>
+      </div>
+
+      <!-- Example 2: Match Details -->
+      <div class="w-full">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-700"> Match Details API</h3>
+        <img src="static/images/2.png" alt="Match Details Screenshot" class="w-full rounded-xl border border-gray-300 shadow-md">
+        <p class="mt-3 text-gray-600 text-sm">
+          Fetch match metadata like teams, scores, venue, toss, date & time, and match result.
+        </p>
+      </div>
+
+      <!-- Example 3: Fantasy Points -->
+      <div class="w-full">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-700"> Fantasy Points Summary</h3>
+        <img src="static/images/3.png" alt="Fantasy Points Screenshot" class="w-full rounded-xl border border-gray-300 shadow-md">
+        <p class="mt-3 text-gray-600 text-sm">
+          Fantasy point calculation based on wickets, runs, economy, and boundaries. Ideal for fantasy team planning.
+        </p>
+      </div>
+
+      <!-- Example 4: Team Insights -->
+      <div class="w-full">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-700">Team Performance Insights</h3>
+        <img src="static/images/4.png" alt="Team Insights Screenshot" class="w-full rounded-xl border border-gray-300 shadow-md">
+        <p class="mt-3 text-gray-600 text-sm">
+          Phase-wise run rate and trends for each team across matches: Powerplay, Middle, and Death overs.
+        </p>
+      </div>
+
+      <!-- Example 5: AI Summary -->
+      <div class="w-full">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-700">AI-Generated Match Summary</h3>
+        <img src="static/images/5.png" alt="AI Summary Screenshot" class="w-full rounded-xl border border-gray-300 shadow-md">
+        <p class="mt-3 text-gray-600 text-sm">
+          Gemini/OpenAI-generated text summary highlighting clutch moments, standout performers, and match turning points.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+                  
+
+                <!-- Downloads Section -->
+                <section id="downloads" class="mb-12 tab-content">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Download Data</h2>
+                        <p class="mb-6 text-gray-700">Download raw data files in CSV format for offline analysis.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-lg mb-2">Matches Data</h3>
+                                <p class="text-sm text-gray-600 mb-3">Contains details of all IPL matches including teams, scores, venues, dates, and results.</p>
+                                <a href="matches.csv" download class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Download matches.csv</a>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-lg mb-2">Deliveries Data</h3>
+                                <p class="text-sm text-gray-600 mb-3">Ball-by-ball data including runs, wickets, batsmen, bowlers, and match information.</p>
+                                <a href="deliveries.csv" download class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Download deliveries.csv</a>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-lg mb-2">Orange Cap (Top Batsmen)</h3>
+                                <p class="text-sm text-gray-600 mb-3">Season-wise top run scorers in the IPL (Orange Cap winners).</p>
+                                <a href="orange_cap.csv" download class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Download orange_cap.csv</a>
+                            </div>
+                            
+                            <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-lg mb-2">Purple Cap (Top Bowlers)</h3>
+                                <p class="text-sm text-gray-600 mb-3">Season-wise top wicket takers in the IPL (Purple Cap winners).</p>
+                                <a href="purple_cap.csv" download class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Download purple_cap.csv</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold">IPL Data API</h2>
+                    <p class="text-gray-400 mt-1">Comprehensive cricket statistics from the Indian Premier League</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/ProffGarryOak/APIPL" class="text-gray-400 hover:text-white">Code</a>
+                    <a href="https://adarsh.cyou/linkedin" class="text-gray-400 hover:text-white">Linkedin</a>
+                    <a href="https://adarsh.cyou/" class="text-gray-400 hover:text-white">Portfolio</a>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
+                <p>© 2025 IPL Data API. All data is for demonstration purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize syntax highlighting
+        hljs.highlightAll();
+        
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Tab navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and contents
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const targetId = this.getAttribute('href').substring(1);
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Scroll to section
+                    document.getElementById(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Show/hide examples
+            const exampleButtons = document.querySelectorAll('.show-example-btn');
+            exampleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const exampleContainer = this.nextElementSibling;
+                    if (exampleContainer.classList.contains('hidden')) {
+                        exampleContainer.classList.remove('hidden');
+                        this.textContent = 'Hide Example';
+                    } else {
+                        exampleContainer.classList.add('hidden');
+                        this.textContent = 'Show Example';
+                    }
+                });
+            });
+            
+            // Highlight current section in nav
+            const sections = document.querySelectorAll('section');
+            window.addEventListener('scroll', function() {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= (sectionTop - 100)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
